@@ -8,6 +8,8 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private float _maxHealthPoints;
 
+    public UnityEvent OnHealthChange = new UnityEvent();
+
     public float HealthPointsNormalized
     {
         get
@@ -43,11 +45,8 @@ public class Player : MonoBehaviour
             return;
         }
 
-        _healthPoints -= damageValue;
-        if (_healthPoints < 0)
-        {
-            _healthPoints = 0;
-        }
+        _healthPoints = Mathf.Clamp(_healthPoints - damageValue, 0, _maxHealthPoints);
+        OnHealthChange.Invoke();
     }
 
     public void Heal(float healValue)
@@ -57,10 +56,7 @@ public class Player : MonoBehaviour
             return;
         }
 
-        _healthPoints += healValue;
-        if (_healthPoints > _maxHealthPoints)
-        {
-            _healthPoints = _maxHealthPoints;
-        }
+        _healthPoints = Mathf.Clamp(_healthPoints + healValue, 0, _maxHealthPoints);
+        OnHealthChange.Invoke();
     }
 }

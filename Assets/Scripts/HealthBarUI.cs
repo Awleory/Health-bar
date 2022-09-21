@@ -16,11 +16,19 @@ public class HealthBarUI : MonoBehaviour
     private float _maxTextValue = 100;
     private int _minSliderValue = 0;
     private int _maxSliderValue = 1;
+    private bool _referencesAreCorrect;
+
+    private void Awake()
+    {
+        _referencesAreCorrect = ReferencesAreCorrect();
+    }
 
     private void OnEnable()
     {
-        if (_player != null && _slider != null && _textValue != null)
+        if (_referencesAreCorrect)
         {
+            _player.OnHealthChange.AddListener(UpdateSlider);
+
             _allReferenceAreCorrect = true;
             _slider.minValue = _minSliderValue;
             _slider.maxValue = _maxSliderValue;
@@ -32,21 +40,41 @@ public class HealthBarUI : MonoBehaviour
         }            
     }
 
-    private void Update()
-    {
-        UpdateSlider();
-    }
-
     private void UpdateSlider()
     {
-        float healthPointsNormalized = _player.HealthPointsNormalized;
-
-        if (_allReferenceAreCorrect == false || _slider.value == healthPointsNormalized)
+        if (_referencesAreCorrect == false)
         {
             return;
         }
 
+        float healthPointsNormalized = _player.HealthPointsNormalized;
+
         _textValue.text = string.Format(_rawTextValue, healthPointsNormalized * _maxTextValue);
         _slider.value = Mathf.MoveTowards(_slider.value, healthPointsNormalized, Time.deltaTime);
+    }
+
+    private bool ReferencesAreCorrect()
+    {
+        bool areCorrect = true;
+
+        if (_player == null)
+        {
+            areCorrect = false;
+            Debug.Log("HealthBarUI: поле _player не заполнено.");
+        }
+
+        if (_slider == null)
+        {
+            areCorrect = false;
+            Debug.Log("HealthBarUI: поле _slider не заполнено.");
+        }
+
+        if (_textValue == null)
+        {
+            areCorrect = false;
+            Debug.Log("HealthBarUI: поле _textValue не заполнено.");
+        }
+
+        return areCorrect;
     }
 }
