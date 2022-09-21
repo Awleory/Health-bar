@@ -8,7 +8,7 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private float _maxHealthPoints;
 
-    public UnityEvent OnHealthChange = new UnityEvent();
+    public UnityEvent HealthChanged = new UnityEvent();
 
     public float HealthPointsNormalized
     {
@@ -46,7 +46,7 @@ public class Player : MonoBehaviour
         }
 
         _healthPoints = Mathf.Clamp(_healthPoints - damageValue, 0, _maxHealthPoints);
-        OnHealthChange.Invoke();
+        HealthChanged.Invoke();
     }
 
     public void Heal(float healValue)
@@ -57,6 +57,6 @@ public class Player : MonoBehaviour
         }
 
         _healthPoints = Mathf.Clamp(_healthPoints + healValue, 0, _maxHealthPoints);
-        OnHealthChange.Invoke();
+        HealthChanged.Invoke();
     }
 }

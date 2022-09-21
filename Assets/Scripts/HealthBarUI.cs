@@ -12,7 +12,6 @@ public class HealthBarUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _textValue;
 
     private string _rawTextValue;
-    private bool _allReferenceAreCorrect;
     private float _maxTextValue = 100;
     private int _minSliderValue = 0;
     private int _maxSliderValue = 1;
@@ -27,9 +26,8 @@ public class HealthBarUI : MonoBehaviour
     {
         if (_referencesAreCorrect)
         {
-            _player.OnHealthChange.AddListener(UpdateSlider);
+            _player.HealthChanged.AddListener(OnUpdateSlider);
 
-            _allReferenceAreCorrect = true;
             _slider.minValue = _minSliderValue;
             _slider.maxValue = _maxSliderValue;
 
@@ -40,7 +38,7 @@ public class HealthBarUI : MonoBehaviour
         }            
     }
 
-    private void UpdateSlider()
+    private void OnUpdateSlider()
     {
         if (_referencesAreCorrect == false)
         {
@@ -57,22 +55,9 @@ public class HealthBarUI : MonoBehaviour
     {
         bool areCorrect = true;
 
-        if (_player == null)
+        if (_player == null || _slider == null || _textValue == null)
         {
             areCorrect = false;
-            Debug.Log("HealthBarUI: поле _player не заполнено.");
-        }
-
-        if (_slider == null)
-        {
-            areCorrect = false;
-            Debug.Log("HealthBarUI: поле _slider не заполнено.");
-        }
-
-        if (_textValue == null)
-        {
-            areCorrect = false;
-            Debug.Log("HealthBarUI: поле _textValue не заполнено.");
         }
 
         return areCorrect;
