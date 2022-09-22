@@ -16,6 +16,7 @@ public class HealthBarUI : MonoBehaviour
     private int _minSliderValue = 0;
     private int _maxSliderValue = 1;
     private bool _referencesAreCorrect;
+    private Coroutine _healthChangeCoroutine;
 
     private void Awake()
     {
@@ -38,6 +39,11 @@ public class HealthBarUI : MonoBehaviour
         }            
     }
 
+    private void OnDisable()
+    {
+        _player.HealthChanged.RemoveListener(OnUpdateSlider);    
+    }
+
     private void OnUpdateSlider()
     {
         if (_referencesAreCorrect == false)
@@ -48,7 +54,21 @@ public class HealthBarUI : MonoBehaviour
         float healthPointsNormalized = _player.HealthPointsNormalized;
 
         _textValue.text = string.Format(_rawTextValue, healthPointsNormalized * _maxTextValue);
-        _slider.value = Mathf.MoveTowards(_slider.value, healthPointsNormalized, Time.deltaTime);
+        
+        if (_healthChangeCoroutine == null)
+        {
+            _healthChangeCoroutine = StartCoroutine(ChangeSliderCoroutine(healthPointsNormalized));
+        }
+    }
+
+    private IEnumerator ChangeSliderCoroutine(float targetValue)
+    {
+        while (_slider.value != targetValue)
+        {
+            _slider.value = Mathf.MoveTowards(_slider.value, targetValue, Time.deltaTime);
+            yield return null;
+        }
+        _healthChangeCoroutine = null;
     }
 
     private bool ReferencesAreCorrect()
