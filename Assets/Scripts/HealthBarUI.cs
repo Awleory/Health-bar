@@ -57,7 +57,7 @@ public class HealthBarUI : MonoBehaviour
         
         if (_healthChangeCoroutine != null)
         {
-            StopCoroutine(ChangeSliderCoroutine(healthPointsNormalized));
+            StopCoroutine(_healthChangeCoroutine);
         }
         _healthChangeCoroutine = StartCoroutine(ChangeSliderCoroutine(healthPointsNormalized));
     }
