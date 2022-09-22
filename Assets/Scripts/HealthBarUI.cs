@@ -55,10 +55,11 @@ public class HealthBarUI : MonoBehaviour
 
         _textValue.text = string.Format(_rawTextValue, healthPointsNormalized * _maxTextValue);
         
-        if (_healthChangeCoroutine == null)
+        if (_healthChangeCoroutine != null)
         {
-            _healthChangeCoroutine = StartCoroutine(ChangeSliderCoroutine(healthPointsNormalized));
+            StopCoroutine(ChangeSliderCoroutine(healthPointsNormalized));
         }
+        _healthChangeCoroutine = StartCoroutine(ChangeSliderCoroutine(healthPointsNormalized));
     }
 
     private IEnumerator ChangeSliderCoroutine(float targetValue)
